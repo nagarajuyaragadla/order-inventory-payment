@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class JwtUtil {
 
     private static final String SECRET =
-            "mysecretkeymysecretkeymysecretkey12";
+            "my-super-secret-key-my-super-secret-key-123456";
 
     private final Key key =
             Keys.hmacShaKeyFor(SECRET.getBytes());
