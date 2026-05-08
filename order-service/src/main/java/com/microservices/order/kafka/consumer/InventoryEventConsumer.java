@@ -34,7 +34,7 @@ public class InventoryEventConsumer {
                     10.5);
 
             PaymentResponse response = paymentClient.processPayment(request);
-            log.info("Payemene response for orderId {}; ", event.getOrderId(),response);
+            log.info("Payemene response for orderId {},{} ", event.getOrderId(),response);
 
         } else {
 
