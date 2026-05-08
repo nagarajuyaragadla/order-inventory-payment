@@ -1,71 +1,44 @@
 package com.microservices.order.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.microservies.common.event.InventoryEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-
+import org.springframework.kafka.core.*;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 public class KafkaConsumerConfig {
 
     @Bean
-    public ConsumerFactory<String, Object> consumerFactory() {
+    public ConsumerFactory<String, InventoryEvent> consumerFactory() {
 
-        JsonDeserializer<Object> deserializer =
-                new JsonDeserializer<>(Object.class);
-
+        JsonDeserializer<InventoryEvent> deserializer =
+                new JsonDeserializer<>(InventoryEvent.class);
         deserializer.addTrustedPackages("*");
 
         Map<String, Object> config = new HashMap<>();
 
-        config.put(
-                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                "localhost:9092"
-        );
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "order-group");
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
 
-        config.put(
-                ConsumerConfig.GROUP_ID_CONFIG,
-                "order-group"
-        );
-
-        config.put(
-                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
-                StringDeserializer.class
-        );
-
-        config.put(
-                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
-                JsonDeserializer.class
-        );
-
-        config.put(
-                JsonDeserializer.TRUSTED_PACKAGES,
-                "*"
-        );
-
-        return new DefaultKafkaConsumerFactory<>(
-                config,
+        return new DefaultKafkaConsumerFactory<>(config,
                 new StringDeserializer(),
-                deserializer
-        );
+                deserializer);
     }
 
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Object>
+    @Bean(name = "kafkaListenerContainerFactory")
+    public ConcurrentKafkaListenerContainerFactory<String, InventoryEvent>
     kafkaListenerContainerFactory() {
 
-        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
+        ConcurrentKafkaListenerContainerFactory<String, InventoryEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(consumerFactory());
