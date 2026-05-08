@@ -1,5 +1,8 @@
 package com.microservices.order.kafka.consumer;
 
+import com.microservices.order.webclient.PaymentClient;
+import com.microservies.common.dto.PaymentRequest;
+import com.microservies.common.dto.PaymentResponse;
 import com.microservies.common.event.InventoryEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,20 +14,27 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class InventoryEventConsumer {
 
-    @KafkaListener(
-            topics = "inventory-events",
-            groupId = "order-group"
-    )
+    private final PaymentClient paymentClient;
+
+    @KafkaListener(topics = "inventory-events", groupId = "order-group")
     public void consumeInventoryEvent(InventoryEvent event) {
 
         log.info("Received Inventory Event::::::::::::: {}", event);
-
+        event.setStatus("SUCCESS");
         if ("SUCCESS".equalsIgnoreCase(event.getStatus())) {
 
             log.info("Inventory confirmed for orderId: {}", event.getOrderId());
 
             // 👉 update order status = INVENTORY_CONFIRMED
             // orderService.updateStatus(event.getOrderId(), "INVENTORY_CONFIRMED");
+
+            PaymentRequest request = new PaymentRequest(
+                    event.getOrderId(),
+                    event.getProductCode(),
+                    10.5);
+
+            PaymentResponse response = paymentClient.processPayment(request);
+            log.info("Payemene response for orderId {}; ", event.getOrderId(),response);
 
         } else {
 

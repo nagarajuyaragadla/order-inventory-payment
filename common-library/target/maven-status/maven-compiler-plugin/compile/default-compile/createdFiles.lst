@@ -1,11 +1,11 @@
 com/microservies/common/event/PaymentFailedEvent.class
+com/microservies/common/event/InventoryEvent.class
+com/microservies/common/event/OrderCreatedEvent.class
+com/microservies/common/event/PaymentSuccessEvent$PaymentSuccessEventBuilder.class
+com/microservies/common/security/JwtService.class
 com/microservies/common/event/OrderCreatedEvent$OrderCreatedEventBuilder.class
 com/microservies/common/event/InventoryUpdatedEvent$InventoryUpdatedEventBuilder.class
-com/microservies/common/event/InventoryEvent.class
 com/microservies/common/event/InventoryUpdatedEvent.class
 com/microservies/common/event/PaymentFailedEvent$PaymentFailedEventBuilder.class
 com/microservies/common/event/InventoryEvent$InventoryEventBuilder.class
 com/microservies/common/event/PaymentSuccessEvent.class
-com/microservies/common/event/OrderCreatedEvent.class
-com/microservies/common/event/PaymentSuccessEvent$PaymentSuccessEventBuilder.class
-com/microservies/common/security/JwtService.class
